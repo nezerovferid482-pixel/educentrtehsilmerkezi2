@@ -1,0 +1,415 @@
+<!doctype html>
+<html lang="az">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Educentr Təhsil Mərkəzi</title>
+<style>
+  :root{
+    --accent: #17a2ff;
+    --dark: #031024;
+    --muted: rgba(255,255,255,0.85);
+    --glass: rgba(255,255,255,0.04);
+    --card: rgba(255,255,255,0.03);
+    --maxw:1100px;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0;
+    font-family: "Segoe UI", Roboto, Arial, sans-serif;
+    background: var(--dark);
+    color: #fff;
+    -webkit-font-smoothing:antialiased;
+    -moz-osx-font-smoothing:grayscale;
+    line-height:1.45;
+  }
+
+  /* HERO: use local educ_building.png if present; JS will fallback to online image if not */
+  .hero{
+    position:relative;
+    min-height:48vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    background: center/cover no-repeat fixed;
+  }
+  .hero .overlay{
+    position:absolute;inset:0;
+    background: linear-gradient(180deg, rgba(0,0,0,0.45), rgba(0,0,0,0.65));
+  }
+  .hero .hero-content{
+    position:relative; z-index:2;
+    padding:28px;
+    max-width:var(--maxw);
+    margin:0 16px;
+  }
+  .brand-title{
+    font-size:40px;
+    letter-spacing:0.4px;
+    margin:0 0 6px;
+    color:var(--accent);
+    text-shadow:0 8px 30px rgba(0,0,0,0.6);
+  }
+  .brand-sub{
+    margin:0;color:var(--muted);font-size:18px;
+  }
+
+  /* navigation */
+  nav.topnav{
+    display:flex;
+    justify-content:center;
+    gap:6px;
+    padding:10px;
+    background: linear-gradient(90deg, rgba(2,18,38,0.92), rgba(2,18,38,0.95));
+    position:sticky; top:0; z-index:999;
+    border-bottom:1px solid rgba(255,255,255,0.03);
+  }
+  nav.topnav button{
+    background:none;border:0;color:#fff;padding:10px 14px;border-radius:8px;cursor:pointer;font-weight:700;
+    transition: all .18s ease;
+  }
+  nav.topnav button:hover{transform:translateY(-2px);opacity:0.95}
+  nav.topnav button.active{background:linear-gradient(90deg,var(--accent),#4fd3ff);color:var(--dark)}
+
+  /* page container */
+  .page{
+    max-width:var(--maxw);
+    margin:34px auto;
+    padding:22px;
+    background: linear-gradient(180deg, rgba(3,10,23,0.65), rgba(3,10,23,0.7));
+    border-radius:12px;
+    box-shadow:0 8px 30px rgba(1,6,18,0.6);
+    display:none;
+  }
+  .page.active{display:block}
+
+  h2{color:var(--accent);margin-top:0}
+  p.lead{color:var(--muted)}
+
+  /* Preparations sub-tabs */
+  .prep-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+  .prep-row button{padding:8px 12px;border-radius:8px;border:1px solid rgba(255,255,255,0.06);background:transparent;color:#fff;cursor:pointer}
+  .prep-row button.active{background:var(--accent);color:var(--dark);border-color:transparent}
+
+  .prep-inner{
+    margin-top:16px;
+    padding:14px;
+    background:var(--card);
+    border-radius:10px;
+    border:1px solid rgba(255,255,255,0.03);
+    color:#eaf6ff;
+  }
+
+  /* lists, contact, filial */
+  .list{margin:0;padding:0;list-style:none}
+  .list li{padding:10px;border-bottom:1px dashed rgba(255,255,255,0.03)}
+  .contact-block{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .contact-card{padding:12px;background:rgba(255,255,255,0.02);border-radius:8px;border:1px solid rgba(255,255,255,0.03)}
+
+  /* responsive */
+  @media (max-width:900px){
+    .brand-title{font-size:30px}
+    .contact-block{grid-template-columns:1fr}
+  }
+
+  footer{
+    max-width:var(--maxw);
+    margin:16px auto 40px;
+    padding:18px;
+    color:var(--muted);
+    text-align:center;
+    font-size:14px;
+  }
+
+  /* small utility */
+  .muted{color:#cfe8ff}
+  .signature{margin-top:16px;font-style:italic;color:#dff3ff}
+  .highlight{color:var(--accent);font-weight:800}
+</style>
+</head>
+<body>
+
+  <!-- HERO -->
+  <div class="hero" id="hero">
+    <div class="overlay" aria-hidden="true"></div>
+    <div class="hero-content" role="banner">
+      <h1 class="brand-title">Educentr Təhsil Mərkəzi</h1>
+      <p class="brand-sub">Elm sənin yolundur — Azərbaycanın gələcəyi üçün təhsil ünvanı</p>
+    </div>
+  </div>
+
+  <!-- NAV -->
+  <nav class="topnav" role="navigation" aria-label="Əsas menyu">
+    <button data-page="home" class="active">Əsas səhifə</button>
+    <button data-page="preps">Hazırlıqlar</button>
+    <button data-page="elanlar">Elanlar</button>
+    <button data-page="xeberler">Xəbərlər</button>
+    <button data-page="naliyyetler">Nailiyyətlər</button>
+    <button data-page="filiallar">Filiallar</button>
+    <button data-page="elaqe">Əlaqə</button>
+  </nav>
+
+  <!-- PAGES: All in one file; JS will show/hide -->
+  <main>
+    <!-- HOME -->
+    <article id="home" class="page active" role="region" aria-labelledby="homeTitle">
+      <h2 id="homeTitle">Xoş gəlmisiniz</h2>
+      <p class="lead">Educentr Təhsil Mərkəzi 2025-ci ildən fəaliyyət göstərir. Burada tələbələr üçün yüksək səviyyəli hazırlıq proqramları, onlayn sınaqlar və olimpiada kursları təqdim olunur.</p>
+
+      <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:18px">
+        <div style="flex:1;min-width:220px" class="contact-card">
+          <strong>Əsas kontakt</strong>
+          <p class="muted">Telefon: <span class="highlight">051 694 43 40</span></p>
+          <p class="muted">Onlayn şöbə: <span class="highlight">077 597 30 53</span></p>
+          <p class="muted">Email: <span class="highlight">educentrtehilmerkezi1@gmail.com</span></p>
+        </div>
+
+        <div style="flex:1;min-width:220px" class="contact-card">
+          <strong>Əməkdaşlıq</strong>
+          <p class="muted">Educentr — rəsmi olaraq <span class="highlight">Oxuyan.az</span> ilə əməkdaşlıq edir. Əməkdaşlıq layihələri, birgə sınaqlar və təhsil proqramları üzrə məlumat üçün əlaqə saxlayın.</p>
+        </div>
+      </div>
+    </article>
+
+    <!-- PREPARATIONS (main tab) -->
+    <article id="preps" class="page" role="region" aria-labelledby="prepsTitle">
+      <h2 id="prepsTitle">Hazırlıqlar</h2>
+      <p class="lead">Aşağıdakı kateqoriyalardan birinə vurun — hər biri öz ayrıca görünüşlü bölmə kimi açılacaq.</p>
+
+      <div class="prep-row" role="tablist" aria-label="Hazırlıq kateqoriyaları">
+        <button data-prep="buraxilish" aria-controls="buraxilish">Buraxılış</button>
+        <button data-prep="magistr" aria-controls="magistr">Magistr</button>
+        <button data-prep="lisey" aria-controls="lisey">Lisey</button>
+        <button data-prep="blok" aria-controls="blok">Blok</button>
+        <button data-prep="olimpiada" aria-controls="olimpiada">Olimpiada</button>
+        <button data-prep="yerli" aria-controls="yerli">Yerli & Beynəlxalq</button>
+      </div>
+
+      <!-- individual prep contents (initially hidden, JS toggles) -->
+      <div id="buraxilish" class="prep-content" style="display:none">
+        <h3>Buraxılış hazırlığı</h3>
+        <p>Tam buraxılış proqramı: dərslər, testlər, praktik tapşırıqlar və aylıq qiymətləndirmə. Məqsəd — yüksək nəticə və inamlı imtahan çıxışı.</p>
+        <p><strong>Qeydiyyat üçün:</strong> 051 694 43 40</p>
+        <p class="signature">— Fərid Nəzərov, Baş direktor</p>
+      </div>
+
+      <div id="magistr" class="prep-content" style="display:none">
+        <h3>Magistr hazırlanğı</h3>
+        <p>Magistratura imtahanlarına (müvafiq fənlər üzrə) hazırlıq, tezis yazımı və tədqiqat metodları üçün mentorluq.</p>
+        <p><strong>Qeydiyyat üçün:</strong> 077 597 30 53</p>
+        <p class="signature">— Fərid Nəzərov, Baş direktor</p>
+      </div>
+
+      <div id="lisey" class="prep-content" style="display:none">
+        <h3>Liseyə hazırlıq</h3>
+        <p>Lisey və ixtisaslaşmış məktəblərə qəbul üçün strukturlaşdırılmış kurslar, sınaq imtahanları və fərdi məşğələlər.</p>
+        <p><strong>Qeydiyyat üçün:</strong> 051 694 43 40</p>
+        <p class="signature">— Fərid Nəzərov, Baş direktor</p>
+      </div>
+
+      <div id="blok" class="prep-content" style="display:none">
+        <h3>Blok-modul hazırlıqları</h3>
+        <p>Qəbul imtahanları üçün blok sistemi: qısa, intensiv modullar və real test vəziyyətləri.</p>
+        <p><strong>Qeydiyyat üçün:</strong> 077 597 30 53</p>
+        <p class="signature">— Fərid Nəzərov, Baş direktor</p>
+      </div>
+
+      <div id="olimpiada" class="prep-content" style="display:none">
+        <h3>Olimpiada hazırlığı</h3>
+        <p>Respublika və beynəlxalq olimpiadalar üçün ixtisaslaşmış təlim planı, dərindən problem həlli və yarış strategiyaları.</p>
+        <p><strong>Qeydiyyat üçün:</strong> 051 694 43 40 | 077 597 30 53</p>
+        <p class="signature">— Fərid Nəzərov, Baş direktor</p>
+      </div>
+
+      <div id="yerli" class="prep-content" style="display:none">
+        <h3>Yerli &amp; Beynəlxalq</h3>
+        <p>Milli və beynəlxalq səviyyəli hazırlıq: mərhələli planlama və mentorluq, xarici yarışlara seçki dəstəyi.</p>
+        <p><strong>Qeydiyyat üçün:</strong> 077 597 30 53</p>
+        <p class="signature">— Fərid Nəzərov, Baş direktor</p>
+      </div>
+    </article>
+
+    <!-- ELANLAR -->
+    <article id="elanlar" class="page" role="region" aria-labelledby="elanTitle">
+      <h2 id="elanTitle">Elanlar</h2>
+      <ul class="list">
+        <li><strong>Yeni qrup</strong> — Buraxılış hazırlığı yeni qrupu üçün qeydiyyat başladı. Qeydiyyat: 051 694 43 40</li>
+        <li><strong>Onlayn sınaq</strong> — Aylıq sınaq: mövzu üzrə. Müraciət: 077 597 30 53</li>
+      </ul>
+    </article>
+
+    <!-- XƏBƏRLƏR -->
+    <article id="xeberler" class="page" role="region" aria-labelledby="xeberTitle">
+      <h2 id="xeberTitle">Xəbərlər</h2>
+      <p class="lead">Educentr və Oxuyan.az əməkdaşlığı çərçivəsində yeni tədris materialları və canlı seminarlar təqdim olunur.</p>
+      <p>Saytda və sosial mediada yenilikləri izləyin.</p>
+    </article>
+
+    <!-- NAILIYYETLER -->
+    <article id="naliyyetler" class="page" role="region" aria-labelledby="nailTitle">
+      <h2 id="nailTitle">Nailiyyətlər</h2>
+      <ul class="list">
+        <li>Respublika fənn olimpiadalarında qaliblər.</li>
+        <li>100+ tələbə uğurlu qəbul nəticələri.</li>
+      </ul>
+    </article>
+
+    <!-- FILIALLAR -->
+    <article id="filiallar" class="page" role="region" aria-labelledby="filialTitle">
+      <h2 id="filialTitle">Filiallar</h2>
+      <div class="contact-block" style="margin-top:10px">
+        <div class="contact-card">
+          <strong>Lerik Filialı</strong>
+          <p class="muted">Əlaqə: <span class="highlight">051 694 43 40</span></p>
+          <p class="muted">Xidmətlər: buraxılış, lisey və region üzrə onlayn dəstək.</p>
+        </div>
+
+        <div class="contact-card">
+          <strong>Onlayn şöbə</strong>
+          <p class="muted">Əlaqə: <span class="highlight">077 597 30 53</span></p>
+          <p class="muted">Onlayn kurslar və sınaqlar — ölkə üzrə xidmət.</p>
+        </div>
+
+        <div class="contact-card">
+          <strong>Sabunçu Filialı (Baş ofis)</strong>
+          <p class="muted">Əlaqə: <span class="highlight">051 694 43 40</span> | <span class="highlight">077 597 30 53</span></p>
+          <p class="muted">Ünvan: Sabunçu, Bakı (ətraflı ünvan üçün zəng edin).</p>
+        </div>
+      </div>
+
+      <p style="margin-top:12px;color:#dff3ff"><strong>Əməkdaşlıq:</strong> Educentr rəsmi əməkdaşdır — <span class="highlight">Oxuyan.az</span></p>
+    </article>
+
+    <!-- ELAQE -->
+    <article id="elaqe" class="page" role="region" aria-labelledby="elaqeTitle">
+      <h2 id="elaqeTitle">Əlaqə</h2>
+      <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:10px">
+        <div class="contact-card" style="flex:1;min-width:220px">
+          <strong>Telefonlar</strong>
+          <p class="muted">Lerik: <span class="highlight">051 694 43 40</span></p>
+          <p class="muted">Onlayn şöbə: <span class="highlight">077 597 30 53</span></p>
+        </div>
+
+        <div class="contact-card" style="flex:1;min-width:220px">
+          <strong>Email</strong>
+          <p class="muted"><a href="mailto:educentrtehilmerkezi1@gmail.com" style="color:var(--accent);text-decoration:none">educentrtehilmerkezi1@gmail.com</a></p>
+          <p class="muted">Əməkdaşlıq: <span class="highlight">Oxuyan.az</span></p>
+        </div>
+      </div>
+
+      <div style="margin-top:16px">
+        <label style="display:block;margin-bottom:6px">Mesaj göndər (sadə)</label>
+        <form id="contactForm">
+          <input type="text" id="name" placeholder="Adınız" style="padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.06);width:100%;margin-bottom:8px;background:#021226;color:#fff">
+          <input type="email" id="email" placeholder="E-poçt" style="padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.06);width:100%;margin-bottom:8px;background:#021226;color:#fff">
+          <textarea id="message" placeholder="Mesajınız" style="padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.06);width:100%;min-height:100px;background:#021226;color:#fff"></textarea>
+          <div style="margin-top:8px">
+            <button type="submit" style="padding:10px 14px;border-radius:8px;border:0;background:var(--accent);color:#021226;font-weight:800;cursor:pointer">Göndər</button>
+          </div>
+        </form>
+        <p id="contactResult" style="margin-top:8px;color:#cfe8ff;display:none"></p>
+      </div>
+    </article>
+
+  </main>
+
+  <!-- footer/signature -->
+  <footer>
+    <div>“Elm gələcəyin açarıdır. Biz Educentr olaraq gənclərin potensialını reallaşdırmaq üçün buradayıq.”</div>
+    <div class="signature">— <strong>Fərid Nəzərov</strong>, Educentr Təhsil Mərkəzinin Baş direktoru</div>
+  </footer>
+
+<script>
+  // Initial background: try local image 'educ_building.png', fallback to online if fails
+  (function(){
+    const hero = document.getElementById('hero');
+    const local = 'educ_building.png'; // user can place this image in same folder
+    const fallback = 'https://upload.wikimedia.org/wikipedia/commons/7/7a/ADA_University_main_building.jpg'; // online fallback
+
+    const img = new Image();
+    img.onload = function(){
+      hero.style.backgroundImage = 'url("'+local+'")';
+      hero.style.backgroundSize = 'cover';
+      hero.style.backgroundPosition = 'center';
+    };
+    img.onerror = function(){
+      hero.style.backgroundImage = 'url("'+fallback+'")';
+      hero.style.backgroundSize = 'cover';
+      hero.style.backgroundPosition = 'center';
+    };
+    img.src = local;
+  })();
+
+  // Top navigation behavior
+  const navButtons = document.querySelectorAll('nav.topnav button');
+  const pages = document.querySelectorAll('.page');
+
+  function showPage(name){
+    // set active nav button
+    navButtons.forEach(b => b.classList.toggle('active', b.dataset.page === name));
+    // show/hide pages
+    pages.forEach(p => p.classList.toggle('active', p.id === name));
+    // scroll to top of page area
+    window.scrollTo({top:0, behavior:'smooth'});
+    // hide all prep inner contents by default when leaving preps
+    if(name !== 'preps'){
+      document.querySelectorAll('.prep-content').forEach(el => el.style.display = 'none');
+      document.querySelectorAll('.prep-row button').forEach(b => b.classList.remove('active'));
+    }
+  }
+
+  navButtons.forEach(btn=>{
+    btn.addEventListener('click', ()=> showPage(btn.dataset.page));
+  });
+
+  // Preparations sub-tabs
+  const prepButtons = document.querySelectorAll('.prep-row button');
+  prepButtons.forEach(pb=>{
+    pb.addEventListener('click', ()=>{
+      // mark active
+      prepButtons.forEach(x=> x.classList.toggle('active', x===pb));
+      // hide all content
+      document.querySelectorAll('.prep-content').forEach(c=> c.style.display='none');
+      // show selected
+      const id = pb.dataset.prep;
+      const el = document.getElementById(id);
+      if(el) el.style.display = 'block';
+      // smooth scroll to prep content area
+      el.scrollIntoView({behavior:'smooth', block:'start'});
+    });
+  });
+
+  // Contact form (client-side only; no server)
+  const contactForm = document.getElementById('contactForm');
+  const contactResult = document.getElementById('contactResult');
+  if(contactForm){
+    contactForm.addEventListener('submit', function(e){
+      e.preventDefault();
+      const name = document.getElementById('name').value.trim();
+      const email = document.getElementById('email').value.trim();
+      const msg = document.getElementById('message').value.trim();
+      if(!name || !email || !msg){
+        contactResult.style.display='block';
+        contactResult.textContent = 'Zəhmət olmasa bütün sahələri doldurun.';
+        return;
+      }
+      // Just show success message (no server)
+      contactResult.style.display='block';
+      contactResult.textContent = 'Mesajınız qəbul edildi. Tezliklə əlaqə saxlanılacaq.';
+      contactForm.reset();
+    });
+  }
+
+  // Initialize: ensure home active
+  showPage('home');
+
+  // Keyboard shortcuts: 1..7
+  document.addEventListener('keydown', (e)=>{
+    if(e.altKey || e.ctrlKey || e.metaKey) return;
+    const map = {'1':'home','2':'preps','3':'elanlar','4':'xeberler','5':'naliyyetler','6':'filiallar','7':'elaqe'};
+    if(map[e.key]) showPage(map[e.key]);
+  });
+</script>
+</body>
+</html>
